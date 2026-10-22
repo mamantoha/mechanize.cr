@@ -26,9 +26,9 @@ describe "Form Fields Multiple Select List Option" do
 
   it "can be clicked multiple option" do
     selectbox.values.empty?.should be_true
-    option1 = selectbox.options[0].click
+    selectbox.options[0].click
     selectbox.values.should eq ["dog"]
-    option2 = selectbox.options[1].click
+    selectbox.options[1].click
     selectbox.values.should eq ["dog", "cat"]
   end
 end
