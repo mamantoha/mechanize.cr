@@ -74,7 +74,7 @@ class Mechanize
       fields.select { |field| field.class == FormContent::Textarea }.map &.as(FormContent::Textarea)
     end
 
-    private def parse
+    private def parse_inputs
       @node.css("input").not_nil!.each do |html_node|
         html_node = html_node.as(Lexbor::Node)
         type = (html_node["type"]? || "text").downcase
@@ -101,6 +101,10 @@ class Mechanize
           fields << FormContent::Field.new(html_node)
         end
       end
+    end
+
+    private def parse
+      parse_inputs
 
       # Find all textarea tags
       @node.css("textarea").each do |node|
