@@ -71,7 +71,7 @@ class Mechanize
 
     # Returns all fields of &lt;input type="textarea"&gt;
     def textareas
-      fields.select { |field| field.class == FormContent::Textarea }.map &.as(FormContent::Textarea)
+      fields.select(&.class.==(FormContent::Textarea)).map &.as(FormContent::Textarea)
     end
 
     private def parse_inputs
