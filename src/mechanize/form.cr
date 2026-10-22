@@ -75,7 +75,7 @@ class Mechanize
     end
 
     private def parse_inputs
-      @node.css("input").not_nil!.each do |html_node|
+      @node.css("input").each do |html_node|
         html_node = html_node.as(Lexbor::Node)
         type = (html_node["type"]? || "text").downcase
         case type

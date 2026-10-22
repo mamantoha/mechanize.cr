@@ -227,8 +227,7 @@ class Mechanize
   end
 
   # parse response. it is used internally.
-  def parse(uri, response, body)
-    response = response.not_nil!
+  def parse(uri, response : ::HTTP::Client::Response, body)
     code = response.status_code
     Mechanize::Page.new(uri, response, body, code, self)
   end

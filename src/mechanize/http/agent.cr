@@ -46,8 +46,8 @@ class Mechanize
         client = ::HTTP::Client.new(uri)
         request_auth client, uri
         @proxy.try { |proxy| client.proxy = proxy }
-        response = http_request(client, uri, method, params, body)
-        body = response.not_nil!.body
+        response = http_request(client, uri, method, params, body) || raise NilAssertionError.new("HTTP request returned no response")
+        body = response.body
         page = response_parse(response, body, uri)
         response_log(response)
 
@@ -87,15 +87,19 @@ class Mechanize
                                body : String?) : ::HTTP::Client::Response?
         request_log(uri, method)
         path = uri.path
-        path += "?#{uri.query.not_nil!}" if uri.query
+        if query = uri.query
+          path += "?#{query}"
+        end
 
-        case uri.scheme.not_nil!.downcase
+        scheme = uri.scheme || raise NilAssertionError.new("Request URI has no scheme")
+        case scheme.downcase
         when "http", "https"
           case method
           when :get
             client.get(path, headers: request_headers)
           when :post
-            client.post(path, headers: request_headers, form: params.not_nil!.fetch("value", ""))
+            params = params || raise NilAssertionError.new("POST parameters are missing")
+            client.post(path, headers: request_headers, form: params.fetch("value", ""))
           when :put
             client.put(path, headers: request_headers, body: body)
           when :delete
@@ -213,7 +217,8 @@ class Mechanize
       end
 
       private def response_parse(response, body, uri)
-        @context.not_nil!.parse(uri, response, body)
+        context = @context || raise NilAssertionError.new("Mechanize context is missing")
+        context.parse(uri, response, body)
       end
 
       # save cookies from response.
@@ -256,14 +261,14 @@ class Mechanize
         end
 
         # fill host if host isn't set
-        if target_url.host.nil? && referer && referer_uri.try &.host
-          target_url.host = referer_uri.not_nil!.host
+        if target_url.host.nil? && referer && (host = referer_uri.try &.host)
+          target_url.host = host
         end
 
         # fill scheme if scheme isn't set
         if target_url.relative?
-          if referer && referer_uri.try &.scheme
-            target_url.scheme = referer_uri.not_nil!.scheme
+          if referer && (scheme = referer_uri.try &.scheme)
+            target_url.scheme = scheme
           else
             target_url.scheme = "http"
           end
