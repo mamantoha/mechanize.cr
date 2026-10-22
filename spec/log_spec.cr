@@ -6,7 +6,7 @@ describe "Mechanize logging" do
     Log.capture("mechanize") do |logs|
       agent = Mechanize.new
       agent.user_agent = "Firefox"
-      page = agent.get("http://example.com/form")
+      agent.get("http://example.com/form")
 
       logs.check(:debug, "GET: http://example.com/form")
       logs.check(:debug, "request-header: User-Agent => Firefox")

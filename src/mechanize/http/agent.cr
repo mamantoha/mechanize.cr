@@ -277,8 +277,6 @@ class Mechanize
       end
 
       private def response_authenticate(response, page, uri, params, referer) : Page
-        www_authenticate = response.headers["www-authenticate"]
-
         unless www_authenticate = response.headers["www-authenticate"]
           # TODO: raise error
         end
