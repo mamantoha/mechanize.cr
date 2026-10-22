@@ -48,10 +48,6 @@ class Mechanize
       @name = node.fetch("name", "")
       @clicked_buttons = Array(FormContent::Button).new
       @page = page
-      # @mech             = mech
-
-      # @encoding = node['accept-charset'] || (page && page.encoding) || nil
-      # @ignore_encoding_error = false
       parse
     end
 
@@ -160,11 +156,6 @@ class Mechanize
       radio_groups.each_value do |group|
         checked = group.select(&.checked)
         if checked.uniq.size > 1
-          # values = checked.map(&.value).join(', ').inspect
-          # name = checked.first.name.inspect
-          # raise Mechanize::Error,
-          #      "radiobuttons #{values} are checked in the #{name} group, " \
-          #      "only one is allowed"
           raise Error.new
         else
           successful_controls << checked.first unless checked.empty?

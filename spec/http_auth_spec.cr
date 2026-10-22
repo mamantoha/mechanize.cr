@@ -7,7 +7,6 @@ describe "Mechanize HTTP Authentication test" do
     agent = Mechanize.new
     page = agent.get("#{TEST_SERVER_URL}/secret")
     page.code.should eq 401
-    # WebMock.allow_net_connect = false
   end
 
   it "should be successful with credentials " do

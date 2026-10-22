@@ -31,12 +31,10 @@ class Mechanize
         target_uri.path = "/"
         case scheme
         when "Basic"
-          # raise ArgumentError, "provide uri for Basic authentication" unless uri
           AuthRealm.new scheme, target_uri, self["realm"]
         when "Digest"
           AuthRealm.new scheme, target_uri, self["realm"]
         else
-          # raise Mechanize::Error, "unknown HTTP authentication scheme #{scheme}"
           raise Exception.new("unknown HTTP authentication scheme #{scheme}")
         end
       end
@@ -50,12 +48,6 @@ class Mechanize
           params_value["realm"] # NTLM has a string for params
         end
       end
-
-      ##
-      # The raw authentication challenge
-
-      # alias to_s raw
-
     end
   end
 end

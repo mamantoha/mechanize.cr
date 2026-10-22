@@ -129,15 +129,6 @@ class Mechanize
             client.basic_auth user, password
           end
         end
-
-        # if realm = schemes[:digest].find(&.uri.==(base_uri)) then
-        #  request_auth_digest request, uri, realm, base_uri, false
-        # elsif realm = schemes[:iis_digest].find(&.uri.==(base_uri)) then
-        #  request_auth_digest request, uri, realm, base_uri, true
-        # elsif realm = schemes[:basic].find(&.uri.==(base_uri)) then
-        #  user, password, = @auth_store.credentials_for uri, realm.realm
-        #  request.basic_auth user, password
-        # end
       end
 
       # returns the page now mechanize visiting.

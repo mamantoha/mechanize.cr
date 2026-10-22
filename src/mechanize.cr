@@ -62,7 +62,6 @@ class Mechanize
     method = :get
     page = @agent.fetch uri, method, headers, params
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -118,7 +117,6 @@ class Mechanize
     request_headers.delete("Content-Type")
     request_headers.delete("Content-Length")
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -140,7 +138,6 @@ class Mechanize
 
     page = @agent.fetch(uri, method, headers: headers, body: body)
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -159,7 +156,6 @@ class Mechanize
     method = :head
     page = @agent.fetch uri, method, headers
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
