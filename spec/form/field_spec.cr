@@ -1,19 +1,19 @@
 require "../spec_helper"
 
 WebMock.stub(:get, "example.com/form/fields").to_return(body: <<-BODY
-<html>
-  <head>
-    <title>page_title</title>
-  </head>
-  <body>
-    <form action="post_path" method="post" name="sample_form">
-      <input type="text" name="name" value="kanezoh">
-      <input type="text" name="name" value="dareda">
-      <input type="text" name="email" class="emailClass" id="emailID">
-    </form>
-  </body>
-</html>
-BODY
+  <html>
+    <head>
+      <title>page_title</title>
+    </head>
+    <body>
+      <form action="post_path" method="post" name="sample_form">
+        <input type="text" name="name" value="kanezoh">
+        <input type="text" name="name" value="dareda">
+        <input type="text" name="email" class="emailClass" id="emailID">
+      </form>
+    </body>
+  </html>
+  BODY
 )
 
 describe "Form Fields" do

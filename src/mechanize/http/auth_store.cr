@@ -51,7 +51,7 @@ class Mechanize
         realm = "" if realm.nil?
 
         realms = auth_accounts.fetch(target_uri, nil)
-        return nil if realms.nil?
+        return if realms.nil?
 
         realms.fetch(realm, nil) || realms.fetch("", nil)
       end

@@ -11,15 +11,15 @@ WebMock.stub(:get, "https://example.com/").to_return
 WebMock.stub(:get, "example.com/hoge/paths").to_return
 WebMock.stub(:get, "www.example.com").to_return
 WebMock.stub(:get, "example.com/meta_cookie").to_return(body: <<-BODY
-<html>
-  <head>
-    <title>page_title</title>
-    <meta http-equiv='Set-Cookie' content='id=123;SameSite=None;Secure'>
-  </head>
-  <body>
-  </body>
-</html>
-BODY
+  <html>
+    <head>
+      <title>page_title</title>
+      <meta http-equiv='Set-Cookie' content='id=123;SameSite=None;Secure'>
+    </head>
+    <body>
+    </body>
+  </html>
+  BODY
 )
 
 describe "Mechanize Cookie test" do
@@ -65,40 +65,40 @@ describe "Mechanize Cookie test" do
     agent.get("http://example.com/")
     agent.request_headers["Cookie"].should eq "id=123"
     agent.get("http://another_domain.com/")
-    agent.request_headers.has_key?("Cookie").should eq false
+    agent.request_headers.has_key?("Cookie").should be_false
   end
 
   it "sends cookie to subdomain if domain attribute is set" do
     agent = Mechanize.new
     agent.get("http://example.com/cookies1")
     agent.get("http://www.example.com/")
-    agent.request_headers.has_key?("Cookie").should eq false
+    agent.request_headers.has_key?("Cookie").should be_false
 
     agent.get("http://example.com/cookies1_domain")
     agent.get("http://www.example.com/")
-    agent.request_headers.has_key?("Cookie").should eq true
+    agent.request_headers.has_key?("Cookie").should be_true
   end
 
   it "doesn't send not-matched path if path attribute is set" do
     agent = Mechanize.new
     agent.get("http://example.com/paths")
     agent.get("http://example.com/")
-    agent.request_headers.has_key?("Cookie").should eq false
+    agent.request_headers.has_key?("Cookie").should be_false
     agent.get("http://example.com/paths")
-    agent.request_headers.has_key?("Cookie").should eq true
+    agent.request_headers.has_key?("Cookie").should be_true
     agent.get("http://example.com/paths/hoge")
-    agent.request_headers.has_key?("Cookie").should eq true
+    agent.request_headers.has_key?("Cookie").should be_true
     agent.get("http://example.com/hoge/paths")
-    agent.request_headers.has_key?("Cookie").should eq false
+    agent.request_headers.has_key?("Cookie").should be_false
   end
 
   it "doesn't send cookie to http protocol if secure attribute is set" do
     agent = Mechanize.new
     agent.get("http://example.com/secure_cookies")
     agent.get("http://example.com/")
-    agent.request_headers.has_key?("Cookie").should eq false
+    agent.request_headers.has_key?("Cookie").should be_false
     agent.get("https://example.com/")
-    agent.request_headers.has_key?("Cookie").should eq true
+    agent.request_headers.has_key?("Cookie").should be_true
     agent.request_headers["Cookie"].should eq "id=123"
   end
 end

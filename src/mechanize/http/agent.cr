@@ -228,7 +228,7 @@ class Mechanize
           end
         end
         header_cookies = response.try &.cookies
-        if (header_cookies.nil? || header_cookies.try &.empty?)
+        if header_cookies.nil? || header_cookies.try &.empty?
           return
         else
           save_cookies(uri, header_cookies)

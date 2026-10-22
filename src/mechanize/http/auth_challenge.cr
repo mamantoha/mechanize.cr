@@ -20,8 +20,6 @@ class Mechanize
         params_value = params
         if params_value.is_a?(Hash)
           params_value[param] # NTLM has a string for params
-        else
-          nil
         end
       end
 
@@ -50,8 +48,6 @@ class Mechanize
         params_value = params
         if params_value.is_a?(Hash)
           params_value["realm"] # NTLM has a string for params
-        else
-          nil
         end
       end
 

@@ -88,9 +88,9 @@ describe "Mechanize HTTP test" do
     agent = Mechanize.new
     uri = "http://example.com/"
     headers = HTTP::Headers{"Foo" => "Bar"}
-    agent.request_headers.empty?.should eq true
+    agent.request_headers.empty?.should be_true
     page = agent.get(uri, headers: headers)
-    agent.request_headers.empty?.should eq false
+    agent.request_headers.empty?.should be_false
     agent.request_headers["Foo"].should eq "Bar"
   end
 

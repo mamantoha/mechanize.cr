@@ -56,6 +56,6 @@ describe "Mechanize AuthChallenge test" do
 
   it "test_realm_name_ntlm" do
     challenge = Mechanize::HTTP::AuthChallenge.new "Negotiate, NTLM"
-    challenge.realm_name.should eq nil
+    challenge.realm_name.should be_nil
   end
 end

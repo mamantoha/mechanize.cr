@@ -17,8 +17,6 @@ class Mechanize::FormContent::SelectList < Mechanize::FormContent::MultiSelectLi
       values.last
     elsif options.size > 0
       options.first.value
-    else
-      nil
     end
   end
 
@@ -29,8 +27,6 @@ class Mechanize::FormContent::SelectList < Mechanize::FormContent::MultiSelectLi
   def query_value
     if v = value
       [[name, v]]
-    else
-      nil
     end
   end
 end

@@ -62,7 +62,7 @@ describe "Mechanize Agent test" do
     agent.history.size.should eq 0
     agent.download("http://example.com", "mechanizecr_example.html")
     agent.history.size.should eq 0
-    File.exists?("mechanizecr_example.html").should eq true
+    File.exists?("mechanizecr_example.html").should be_true
     File.delete("mechanizecr_example.html")
   end
 

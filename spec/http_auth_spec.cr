@@ -1,5 +1,5 @@
 require "./spec_helper"
-require "./server.cr"
+require "./server_spec.cr"
 
 describe "Mechanize HTTP Authentication test" do
   WebMock.allow_net_connect = true
