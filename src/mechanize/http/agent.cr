@@ -114,7 +114,7 @@ class Mechanize
         schemes = @authenticate_methods.fetch(base_uri, nil)
         return if schemes.nil?
 
-        if realm = schemes["basic"].find { |r| r.uri == base_uri }
+        if realm = schemes["basic"].find { |candidate| candidate.uri == base_uri }
           res = @auth_store.credentials_for uri, realm.realm
           if res
             user, password = res
@@ -288,7 +288,7 @@ class Mechanize
           return page
         end
 
-        if challenge = challenges.find { |c| c.scheme == "Basic" }
+        if challenge = challenges.find { |candidate| candidate.scheme == "Basic" }
           realm = challenge.realm uri
           if realm
             @authenticate_methods[realm.uri] = Hash(String, Array(AuthRealm)).new([] of AuthRealm) unless @authenticate_methods.has_key?(realm.uri)

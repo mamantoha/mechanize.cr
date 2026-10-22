@@ -14,8 +14,8 @@ class Mechanize::FormContent::MultiSelectList
     @type = node.fetch("type", "")
     @values = Array(String).new
     @options = Array(FormContent::Option).new
-    node.css("option").each { |n|
-      @options << FormContent::Option.new(n, self)
+    node.css("option").each { |option_node|
+      @options << FormContent::Option.new(option_node, self)
     }
   end
 
@@ -40,7 +40,7 @@ class Mechanize::FormContent::MultiSelectList
   def values=(new_values)
     select_none
     new_values.each do |value|
-      option = options.find { |o| o.value == value }
+      option = options.find { |candidate| candidate.value == value }
       if option.nil?
         @values.push(value)
       else

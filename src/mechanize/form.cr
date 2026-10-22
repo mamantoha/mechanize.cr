@@ -71,7 +71,7 @@ class Mechanize
 
     # Returns all fields of &lt;input type="textarea"&gt;
     def textareas
-      fields.select { |f| f.class == FormContent::Textarea }.map &.as(FormContent::Textarea)
+      fields.select { |field| field.class == FormContent::Textarea }.map &.as(FormContent::Textarea)
     end
 
     private def parse
@@ -153,8 +153,8 @@ class Mechanize
         radio_groups[name] << radio
       end
 
-      radio_groups.each_value do |g|
-        checked = g.select(&.checked)
+      radio_groups.each_value do |group|
+        checked = group.select(&.checked)
         if checked.uniq.size > 1
           # values = checked.map(&.value).join(', ').inspect
           # name = checked.first.name.inspect
@@ -177,8 +177,8 @@ class Mechanize
         query.push(value)
       end
 
-      @selectboxes.each do |s|
-        value = s.query_value
+      @selectboxes.each do |selectbox|
+        value = selectbox.query_value
         if value
           value.each do |v|
             query.push(v)
