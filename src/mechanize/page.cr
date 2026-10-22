@@ -55,7 +55,7 @@ class Mechanize
     # page.links # => Array(Mechanize::PageContent::Link)
     # ```
     def links : Array(PageContent::Link)
-      %w{a area}.flat_map do |tag|
+      %w[a area].flat_map do |tag|
         css(tag).map do |node|
           PageContent::Link.new(node, @mech, self)
         end

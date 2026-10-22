@@ -11,7 +11,7 @@ describe "Mechanize AuthRealm test" do
     realm.realm.should eq "R"
 
     realm = Mechanize::HTTP::AuthRealm.new "Digest", uri, nil
-    realm.realm.should eq nil
+    realm.realm.should be_nil
   end
 
   it "test_equals2" do

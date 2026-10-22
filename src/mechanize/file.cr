@@ -1,7 +1,5 @@
 class Mechanize
   abstract class File
-    # property :filename
-
     # returns http response body
     getter body : String
     # returns http status code

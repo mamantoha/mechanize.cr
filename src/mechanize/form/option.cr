@@ -4,7 +4,7 @@ class Mechanize::FormContent::Option
   getter node : Lexbor::Node
   getter text : String
   getter value : String
-  getter selected : Bool
+  getter? selected : Bool
 
   def initialize(node, select_list)
     @node = node
@@ -29,11 +29,6 @@ class Mechanize::FormContent::Option
   def click
     unselect_peers
     @selected = !@selected
-  end
-
-  # returns option checked or not
-  def selected?
-    @selected
   end
 
   private def unselect_peers

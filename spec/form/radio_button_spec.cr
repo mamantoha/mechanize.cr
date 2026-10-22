@@ -1,19 +1,19 @@
 require "../spec_helper.cr"
 
 WebMock.stub(:get, "example.com/form/radio_button").to_return(body: <<-BODY
-<html>
-  <head>
-    <title>page_title</title>
-  </head>
-  <body>
-    <form action="post_path" method="post" name="sample_form">
-      <input type="radio" id="contactChoice1" name="contact" value="email">
-      <input type="radio" id="contactChoice2" name="contact" value="phone">
-      <input type="radio" id="contactChoice3" name="contact" value="mail">
-    </form>
-  </body>
-</html>
-BODY
+  <html>
+    <head>
+      <title>page_title</title>
+    </head>
+    <body>
+      <form action="post_path" method="post" name="sample_form">
+        <input type="radio" id="contactChoice1" name="contact" value="email">
+        <input type="radio" id="contactChoice2" name="contact" value="phone">
+        <input type="radio" id="contactChoice3" name="contact" value="mail">
+      </form>
+    </body>
+  </html>
+  BODY
 )
 
 describe "Form Fields RadioButton" do
@@ -30,25 +30,25 @@ describe "Form Fields RadioButton" do
 
   it "can change check status" do
     radiobutton = radiobuttons.first
-    radiobutton.checked?.should eq false
+    radiobutton.checked?.should be_false
     radiobutton.check
-    radiobutton.checked?.should eq true
+    radiobutton.checked?.should be_true
     radiobutton.uncheck
-    radiobutton.checked?.should eq false
+    radiobutton.checked?.should be_false
     # #click reverses check status
     radiobutton.click
-    radiobutton.checked?.should eq true
+    radiobutton.checked?.should be_true
     radiobutton.click
-    radiobutton.checked?.should eq false
+    radiobutton.checked?.should be_false
   end
 
   it "check status is exclusive" do
     radiobuttons[0].check
-    radiobuttons[0].checked.should eq true
-    radiobuttons[1].checked.should eq false
+    radiobuttons[0].checked.should be_true
+    radiobuttons[1].checked.should be_false
     radiobuttons[1].check
-    radiobuttons[1].checked.should eq true
-    radiobuttons[0].checked.should eq false
+    radiobuttons[1].checked.should be_true
+    radiobuttons[0].checked.should be_false
   end
 
   it "doesn't included in request data if checkbox isn't checked" do

@@ -116,8 +116,8 @@ class Mechanize
       # Parses an auth parameter
 
       def auth_param : Array(String)?
-        return nil unless name = token
-        return nil unless scanner.scan(/ *= */)
+        return unless name = token
+        return unless scanner.scan(/ *= */)
 
         value = if scanner.peek(1) == "\""
                   quoted_string
@@ -125,7 +125,7 @@ class Mechanize
                   token
                 end
 
-        return nil unless value
+        return unless value
 
         [name, value]
       end
@@ -138,7 +138,7 @@ class Mechanize
       # For TEXT, the rules of RFC 2047 are ignored.
 
       def quoted_string : String?
-        return nil unless @scanner.scan(/"/)
+        return unless @scanner.scan(/"/)
 
         text = String.new
 
@@ -154,7 +154,7 @@ class Mechanize
               scanner.scan(/./)
               break
             else
-              return nil
+              return
             end
           end
         end

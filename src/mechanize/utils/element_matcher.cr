@@ -32,11 +32,11 @@ class Mechanize
       # page.{{ plural.id }}_with("class" => "foo")
       # page.{{ plural.id }}_with(class: "foo")
       # ```
-      def {{plural.id}}_with(criteria : String | NamedTuple | Hash(String,String))
-        {{plural.id}}_with(criteria){}
+      def {{ plural.id }}_with(criteria : String | NamedTuple | Hash(String,String))
+        {{ plural.id }}_with(criteria){}
       end
 
-      def {{plural.id}}_with(criteria, &block)
+      def {{ plural.id }}_with(criteria, &block)
         if criteria.is_a?(NamedTuple)
           criteria = criteria.to_h
         end
@@ -48,7 +48,7 @@ class Mechanize
             h[k] = v
           end
         end
-        f = {{plural.id}}.select do |elm|
+        f = {{ plural.id }}.select do |elm|
           criteria.all? do |k,v|
             if k == "text"
               v == elm.node.inner_text
@@ -62,10 +62,10 @@ class Mechanize
       end
 
       # returns first element of `#{{ plural.id }}_with`
-      def {{singular.id}}_with(criteria)
-        f = {{plural.id}}_with(criteria)
+      def {{ singular.id }}_with(criteria)
+        f = {{ plural.id }}_with(criteria)
         # TODO: Write correct error message.
-        raise ElementNotFoundError.new(:{{singular.id}}, "") if f.empty?
+        raise ElementNotFoundError.new(:{{ singular.id }}, "") if f.empty?
         f.first
       end
     end

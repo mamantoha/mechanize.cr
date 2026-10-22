@@ -10,19 +10,19 @@ describe "Mechanize HTTP Authentication test" do
   it "auth_param bad no value" do
     parser = Mechanize::HTTP::WWWAuthenticateParser.new
     parser.scanner = StringScanner.new("realm=")
-    parser.auth_param.should eq nil
+    parser.auth_param.should be_nil
   end
 
   it "auth_param bad token" do
     parser = Mechanize::HTTP::WWWAuthenticateParser.new
     parser.scanner = StringScanner.new("realm")
-    parser.auth_param.should eq nil
+    parser.auth_param.should be_nil
   end
 
   it "auth_param bad value" do
     parser = Mechanize::HTTP::WWWAuthenticateParser.new
     parser.scanner = StringScanner.new("realm=\"this ")
-    parser.auth_param.should eq nil
+    parser.auth_param.should be_nil
   end
 
   it "auth_param with quote" do
@@ -196,7 +196,7 @@ describe "Mechanize HTTP Authentication test" do
 
     string = parser.quoted_string
 
-    string.should eq nil
+    string.should be_nil
   end
 
   it "test_quoted_string_quote" do

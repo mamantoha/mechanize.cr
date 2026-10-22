@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: "1.22.0"
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        run: shards install
+        uses: actions/checkout@v7
       - name: Check format
         run: crystal tool format --check
 
@@ -22,15 +22,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {os: ubuntu-latest, crystal: latest}
+          - {os: ubuntu-latest, crystal: "1.22.0"}
           - {os: ubuntu-latest, crystal: nightly}
-          - {os: macos-latest}
+          - {os: macos-latest, crystal: "1.22.0"}
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: ${{ matrix.crystal }}
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: shards install
       - name: Run tests

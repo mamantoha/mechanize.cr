@@ -32,12 +32,14 @@ class Mechanize
       # send http request and return page.
       # This method is called from Mechanize#get, #post and other methods.
       # There's no need to call this method directly.
-      def fetch(uri,
-                method = :get,
-                headers = ::HTTP::Headers.new,
-                params = Hash(String, String).new,
-                body : String? = nil,
-                referer = (current_page unless history.empty?))
+      def fetch(
+        uri,
+        method = :get,
+        headers = ::HTTP::Headers.new,
+        params = Hash(String, String).new,
+        body : String? = nil,
+        referer = (current_page unless history.empty?),
+      )
         uri = resolve_url(uri, referer)
         set_request_headers(uri, headers)
         set_user_agent
@@ -46,8 +48,8 @@ class Mechanize
         client = ::HTTP::Client.new(uri)
         request_auth client, uri
         @proxy.try { |proxy| client.proxy = proxy }
-        response = http_request(client, uri, method, params, body)
-        body = response.not_nil!.body
+        response = http_request(client, uri, method, params, body) || raise NilAssertionError.new("HTTP request returned no response")
+        body = response.body
         page = response_parse(response, body, uri)
         response_log(response)
 
@@ -80,22 +82,28 @@ class Mechanize
       end
 
       # send http request
-      private def http_request(client : ::HTTP::Client,
-                               uri : URI,
-                               method : Symbol,
-                               params : Hash(String, String)?,
-                               body : String?) : ::HTTP::Client::Response?
+      private def http_request(
+        client : ::HTTP::Client,
+        uri : URI,
+        method : Symbol,
+        params : Hash(String, String)?,
+        body : String?,
+      ) : ::HTTP::Client::Response?
         request_log(uri, method)
         path = uri.path
-        path += "?#{uri.query.not_nil!}" if uri.query
+        if query = uri.query
+          path += "?#{query}"
+        end
 
-        case uri.scheme.not_nil!.downcase
+        scheme = uri.scheme || raise NilAssertionError.new("Request URI has no scheme")
+        case scheme.downcase
         when "http", "https"
           case method
           when :get
             client.get(path, headers: request_headers)
           when :post
-            client.post(path, headers: request_headers, form: params.not_nil!.fetch("value", ""))
+            params = params || raise NilAssertionError.new("POST parameters are missing")
+            client.post(path, headers: request_headers, form: params.fetch("value", ""))
           when :put
             client.put(path, headers: request_headers, body: body)
           when :delete
@@ -114,22 +122,13 @@ class Mechanize
         schemes = @authenticate_methods.fetch(base_uri, nil)
         return if schemes.nil?
 
-        if realm = schemes["basic"].find { |r| r.uri == base_uri }
+        if realm = schemes["basic"].find(&.uri.==(base_uri))
           res = @auth_store.credentials_for uri, realm.realm
           if res
             user, password = res
             client.basic_auth user, password
           end
         end
-
-        # if realm = schemes[:digest].find { |r| r.uri == base_uri } then
-        #  request_auth_digest request, uri, realm, base_uri, false
-        # elsif realm = schemes[:iis_digest].find { |r| r.uri == base_uri } then
-        #  request_auth_digest request, uri, realm, base_uri, true
-        # elsif realm = schemes[:basic].find { |r| r.uri == base_uri } then
-        #  user, password, = @auth_store.credentials_for uri, realm.realm
-        #  request.basic_auth user, password
-        # end
       end
 
       # returns the page now mechanize visiting.
@@ -213,7 +212,8 @@ class Mechanize
       end
 
       private def response_parse(response, body, uri)
-        @context.not_nil!.parse(uri, response, body)
+        context = @context || raise NilAssertionError.new("Mechanize context is missing")
+        context.parse(uri, response, body)
       end
 
       # save cookies from response.
@@ -228,7 +228,7 @@ class Mechanize
           end
         end
         header_cookies = response.try &.cookies
-        if (header_cookies.nil? || header_cookies.try &.empty?)
+        if header_cookies.nil? || header_cookies.try &.empty?
           return
         else
           save_cookies(uri, header_cookies)
@@ -245,25 +245,25 @@ class Mechanize
             raise ArgumentError.new("absolute URL needed")
           end
           # escape non-ascii character
-          target_url = target_url.gsub(/[^#{0.chr}-#{126.chr}]/) { |match|
+          target_url = target_url.gsub(/[^#{0.chr}-#{126.chr}]/) do |match|
             {% if compare_versions(Crystal::VERSION, "1.1.1") > 0 %}
               URI.encode_path(match)
             {% else %}
               URI.encode(match)
             {% end %}
-          }
+          end
           target_url = URI.parse(target_url)
         end
 
         # fill host if host isn't set
-        if target_url.host.nil? && referer && referer_uri.try &.host
-          target_url.host = referer_uri.not_nil!.host
+        if target_url.host.nil? && referer && (host = referer_uri.try &.host)
+          target_url.host = host
         end
 
         # fill scheme if scheme isn't set
         if target_url.relative?
-          if referer && referer_uri.try &.scheme
-            target_url.scheme = referer_uri.not_nil!.scheme
+          if referer && (scheme = referer_uri.try &.scheme)
+            target_url.scheme = scheme
           else
             target_url.scheme = "http"
           end
@@ -277,8 +277,6 @@ class Mechanize
       end
 
       private def response_authenticate(response, page, uri, params, referer) : Page
-        www_authenticate = response.headers["www-authenticate"]
-
         unless www_authenticate = response.headers["www-authenticate"]
           # TODO: raise error
         end
@@ -290,7 +288,7 @@ class Mechanize
           return page
         end
 
-        if challenge = challenges.find { |c| c.scheme == "Basic" }
+        if challenge = challenges.find(&.scheme.==("Basic"))
           realm = challenge.realm uri
           if realm
             @authenticate_methods[realm.uri] = Hash(String, Array(AuthRealm)).new([] of AuthRealm) unless @authenticate_methods.has_key?(realm.uri)

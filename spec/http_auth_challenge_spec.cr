@@ -43,19 +43,17 @@ describe "Mechanize AuthChallenge test" do
   end
 
   it "test_realm_name" do
-    uri = URI.parse "http://example.com/"
     challenge = Mechanize::HTTP::AuthChallenge.new "Digest", {"realm" => "r"}, "Digest realm=r"
     challenge.realm_name.should eq "r"
   end
 
   it "test_realm_name_case" do
-    uri = URI.parse "http://example.com/"
     challenge = Mechanize::HTTP::AuthChallenge.new "Digest", {"realm" => "R"}, "Digest realm=R"
     challenge.realm_name.should eq "R"
   end
 
   it "test_realm_name_ntlm" do
     challenge = Mechanize::HTTP::AuthChallenge.new "Negotiate, NTLM"
-    challenge.realm_name.should eq nil
+    challenge.realm_name.should be_nil
   end
 end

@@ -6,8 +6,8 @@ class Mechanize::FormContent::SelectList < Mechanize::FormContent::MultiSelectLi
     super node
     # only one selected option is allowed
     if selected_options.size > 1
-      selected_options.reverse[1..selected_options.size].each do |o|
-        o.unselect
+      selected_options.reverse[1..selected_options.size].each do |option|
+        option.unselect
       end
     end
   end
@@ -17,8 +17,6 @@ class Mechanize::FormContent::SelectList < Mechanize::FormContent::MultiSelectLi
       values.last
     elsif options.size > 0
       options.first.value
-    else
-      nil
     end
   end
 
@@ -29,8 +27,6 @@ class Mechanize::FormContent::SelectList < Mechanize::FormContent::MultiSelectLi
   def query_value
     if v = value
       [[name, v]]
-    else
-      nil
     end
   end
 end

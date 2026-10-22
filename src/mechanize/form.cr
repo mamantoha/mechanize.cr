@@ -48,10 +48,6 @@ class Mechanize
       @name = node.fetch("name", "")
       @clicked_buttons = Array(FormContent::Button).new
       @page = page
-      # @mech             = mech
-
-      # @encoding = node['accept-charset'] || (page && page.encoding) || nil
-      # @ignore_encoding_error = false
       parse
     end
 
@@ -71,11 +67,11 @@ class Mechanize
 
     # Returns all fields of &lt;input type="textarea"&gt;
     def textareas
-      fields.select { |f| f.class == FormContent::Textarea }.map &.as(FormContent::Textarea)
+      fields.select(&.class.==(FormContent::Textarea)).map &.as(FormContent::Textarea)
     end
 
-    private def parse
-      @node.css("input").not_nil!.each do |html_node|
+    private def parse_inputs
+      @node.css("input").each do |html_node|
         html_node = html_node.as(Lexbor::Node)
         type = (html_node["type"]? || "text").downcase
         case type
@@ -101,6 +97,10 @@ class Mechanize
           fields << FormContent::Field.new(html_node)
         end
       end
+    end
+
+    private def parse
+      parse_inputs
 
       # Find all textarea tags
       @node.css("textarea").each do |node|
@@ -153,14 +153,9 @@ class Mechanize
         radio_groups[name] << radio
       end
 
-      radio_groups.each_value do |g|
-        checked = g.select(&.checked)
+      radio_groups.each_value do |group|
+        checked = group.select(&.checked)
         if checked.uniq.size > 1
-          # values = checked.map(&.value).join(', ').inspect
-          # name = checked.first.name.inspect
-          # raise Mechanize::Error,
-          #      "radiobuttons #{values} are checked in the #{name} group, " \
-          #      "only one is allowed"
           raise Error.new
         else
           successful_controls << checked.first unless checked.empty?
@@ -177,8 +172,8 @@ class Mechanize
         query.push(value)
       end
 
-      @selectboxes.each do |s|
-        value = s.query_value
+      @selectboxes.each do |selectbox|
+        value = selectbox.query_value
         if value
           value.each do |v|
             query.push(v)
@@ -193,8 +188,6 @@ class Mechanize
     # submitted with multiple buttons, pass each button to this method.
     def add_button_to_query(button)
       unless button.form_node == @node
-        "#{button.inspect} does not belong to the same page as " \
-        "the form #{@name.inspect} in #{@page.try &.uri}"
         message = "not a valid button"
         raise ArgumentError.new(message)
       end

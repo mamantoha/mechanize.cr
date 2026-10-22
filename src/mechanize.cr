@@ -54,13 +54,14 @@ class Mechanize
   #   params: {"foo" => "bar"},
   #   headers: HTTP::Headers{"Foo" => "Bar"})
   # ```
-  def get(uri : String | URI,
-          headers = ::HTTP::Headers.new,
-          params : Hash(String, String | Array(String)) = Hash(String, String).new) : Mechanize::Page
+  def get(
+    uri : String | URI,
+    headers = ::HTTP::Headers.new,
+    params : Hash(String, String | Array(String)) = Hash(String, String).new,
+  ) : Mechanize::Page
     method = :get
     page = @agent.fetch uri, method, headers, params
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -74,9 +75,11 @@ class Mechanize
   #   query: {"foo" => "bar"},
   #   headers: HTTP::Headers{"Foo" => "Bar"})
   # ```
-  def post(uri : String | URI,
-           headers = ::HTTP::Headers.new,
-           query : Hash(String, String | Array(String)) = Hash(String, String).new) : Mechanize::Page
+  def post(
+    uri : String | URI,
+    headers = ::HTTP::Headers.new,
+    query : Hash(String, String | Array(String)) = Hash(String, String).new,
+  ) : Mechanize::Page
     node = Mechanize::Node.new
     node["method"] = "POST"
     node["enctype"] = "application/x-www-form-urlencoded"
@@ -99,9 +102,11 @@ class Mechanize
   # agent.put("http://example.com",
   #   body: "hello")
   # ```
-  def put(uri : String | URI,
-          body : String?,
-          headers = ::HTTP::Headers.new) : Mechanize::Page
+  def put(
+    uri : String | URI,
+    body : String?,
+    headers = ::HTTP::Headers.new,
+  ) : Mechanize::Page
     method = :put
     headers.merge!({
       "Content-Type"   => "application/octet-stream",
@@ -112,7 +117,6 @@ class Mechanize
     request_headers.delete("Content-Type")
     request_headers.delete("Content-Length")
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -125,14 +129,15 @@ class Mechanize
   # agent.delete("http://example.com",
   #   body: "hello")
   # ```
-  def delete(uri : String | URI,
-             body : String?,
-             headers = ::HTTP::Headers.new) : Mechanize::Page
+  def delete(
+    uri : String | URI,
+    body : String?,
+    headers = ::HTTP::Headers.new,
+  ) : Mechanize::Page
     method = :delete
 
     page = @agent.fetch(uri, method, headers: headers, body: body)
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -144,12 +149,13 @@ class Mechanize
   # agent = Mechanize.new
   # agent.head("http://example.com")
   # ```
-  def head(uri : String | URI,
-           headers = ::HTTP::Headers.new) : Mechanize::Page
+  def head(
+    uri : String | URI,
+    headers = ::HTTP::Headers.new,
+  ) : Mechanize::Page
     method = :head
     page = @agent.fetch uri, method, headers
     add_to_history(page)
-    # yield page if block_given?
     page
   end
 
@@ -227,8 +233,8 @@ class Mechanize
   end
 
   # parse response. it is used internally.
-  def parse(uri, response, body)
-    code = response.not_nil!.status_code
+  def parse(uri, response : ::HTTP::Client::Response, body)
+    code = response.status_code
     Mechanize::Page.new(uri, response, body, code, self)
   end
 
@@ -284,10 +290,12 @@ class Mechanize
   # # make download.html whose content is http://example.com's html.
   # agent.download("http://example.com", "download.html")
   # ```
-  def download(uri : URI | String,
-               filename : String,
-               headers = ::HTTP::Headers.new,
-               params : Hash(String, String | Array(String)) = Hash(String, String).new)
+  def download(
+    uri : URI | String,
+    filename : String,
+    headers = ::HTTP::Headers.new,
+    params : Hash(String, String | Array(String)) = Hash(String, String).new,
+  )
     transact do
       page = get(uri, headers, params)
       case page
@@ -312,7 +320,7 @@ class Mechanize
   end
 
   # Runs given block, then resets the page history as it was before.
-  private def transact
+  private def transact(&)
     # save the previous history status.
     history_backup = Mechanize::History.new(@agent.history.max_size, @agent.history.array.dup)
     begin

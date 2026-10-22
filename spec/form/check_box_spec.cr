@@ -1,18 +1,18 @@
 require "../spec_helper"
 
 WebMock.stub(:get, "example.com/form/check_box").to_return(body: <<-BODY
-<html>
-  <head>
-    <title>page_title</title>
-  </head>
-  <body>
-    <form action="post_path" method="post" name="sample_form">
-      <input type="checkbox" class="some_checkbox" id="remember_me" name="remember_me" checked>
-      <input type="checkbox" class="some_checkbox" id="forget_me" name="forget_me">
-    </form>
-  </body>
-</html>
-BODY
+  <html>
+    <head>
+      <title>page_title</title>
+    </head>
+    <body>
+      <form action="post_path" method="post" name="sample_form">
+        <input type="checkbox" class="some_checkbox" id="remember_me" name="remember_me" checked>
+        <input type="checkbox" class="some_checkbox" id="forget_me" name="forget_me">
+      </form>
+    </body>
+  </html>
+  BODY
 )
 
 describe "Form Fields CheckBox" do
@@ -22,21 +22,21 @@ describe "Form Fields CheckBox" do
 
   it "returns checkbox status" do
     checkbox = form.checkboxes.first
-    checkbox.checked?.should eq true
+    checkbox.checked?.should be_true
   end
 
   it "can change check status" do
     checkbox = form.checkboxes.first
-    checkbox.checked?.should eq true
+    checkbox.checked?.should be_true
     checkbox.uncheck
-    checkbox.checked?.should eq false
+    checkbox.checked?.should be_false
     checkbox.check
-    checkbox.checked?.should eq true
+    checkbox.checked?.should be_true
     # #click reverses check status
     checkbox.click
-    checkbox.checked?.should eq false
+    checkbox.checked?.should be_false
     checkbox.click
-    checkbox.checked?.should eq true
+    checkbox.checked?.should be_true
   end
 
   it "doesn't included in request data if checkbox isn't checked" do

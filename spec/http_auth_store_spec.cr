@@ -78,25 +78,25 @@ describe "Mechanize AuthStore test" do
       Mechanize::HTTP::AuthChallenge.new("Digest", {"realm" => "r"}),
     ]
 
-    auth_store.credentials?(url, challenges).should_not eq true
+    auth_store.credentials?(url, challenges).should_not be_true
 
     auth_store.add_auth url, "user", "pass"
 
-    auth_store.credentials?(url, challenges).should eq true
-    auth_store.credentials?("#{url}/path", challenges).should eq true
+    auth_store.credentials?(url, challenges).should be_true
+    auth_store.credentials?("#{url}/path", challenges).should be_true
   end
 
   it "test_credentials_for" do
     auth_store = Mechanize::HTTP::AuthStore.new
     url = URI.parse("http://example.com/")
-    auth_store.credentials_for(url, "realm").should eq nil
+    auth_store.credentials_for(url, "realm").should be_nil
 
     auth_store.add_auth url, "user", "pass", "realm"
 
     auth_store.credentials_for(url, "realm").should eq ["user", "pass", ""]
     auth_store.credentials_for(url.to_s, "realm").should eq ["user", "pass", ""]
 
-    auth_store.credentials_for(url, "other").should eq nil
+    auth_store.credentials_for(url, "other").should be_nil
   end
 
   it "test_credentials_for_no_realm" do

@@ -7,9 +7,9 @@ describe "Mechanize Agent test" do
     form = page.forms[0]
     form.field_with("name").value = "foo"
     form.field_with("email").value = "bar"
-    page = agent.submit(form)
-    page.not_nil!.code.should eq 200
-    page.not_nil!.body.should eq "success"
+    page = agent.submit(form).should be_a(Mechanize::Page)
+    page.code.should eq 200
+    page.body.should eq "success"
   end
 
   it "can fill and submit form with submit button" do
@@ -19,9 +19,9 @@ describe "Mechanize Agent test" do
     form.field_with("name").value = "foo"
     form.field_with("email").value = "bar"
     submit_button = form.buttons[0]
-    page = agent.submit(form, submit_button)
-    page.not_nil!.code.should eq 200
-    page.not_nil!.body.should eq "success with button"
+    page = agent.submit(form, submit_button).should be_a(Mechanize::Page)
+    page.code.should eq 200
+    page.body.should eq "success with button"
   end
 
   it "can save history" do
@@ -62,7 +62,7 @@ describe "Mechanize Agent test" do
     agent.history.size.should eq 0
     agent.download("http://example.com", "mechanizecr_example.html")
     agent.history.size.should eq 0
-    File.exists?("mechanizecr_example.html").should eq true
+    File.exists?("mechanizecr_example.html").should be_true
     File.delete("mechanizecr_example.html")
   end
 
@@ -74,9 +74,9 @@ describe "Mechanize Agent test" do
     form = page.forms[0]
     form.field_with("name").value = "foo"
     form.field_with("email").value = "bar"
-    page = agent.submit(form)
+    page = agent.submit(form).should be_a(Mechanize::Page)
 
-    page.not_nil!.code.should eq 200
+    page.code.should eq 200
     agent.request_headers["Referer"].should eq(page_url)
   end
 end
