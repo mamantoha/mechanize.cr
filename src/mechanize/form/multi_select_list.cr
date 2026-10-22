@@ -14,9 +14,9 @@ class Mechanize::FormContent::MultiSelectList
     @type = node.fetch("type", "")
     @values = Array(String).new
     @options = Array(FormContent::Option).new
-    node.css("option").each { |option_node|
+    node.css("option").each do |option_node|
       @options << FormContent::Option.new(option_node, self)
-    }
+    end
   end
 
   # set all options unchecked
