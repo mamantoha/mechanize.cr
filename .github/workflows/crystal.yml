@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
       - name: Check out repository code
         uses: actions/checkout@v7
       - name: Check format
@@ -27,6 +29,8 @@ jobs:
     steps:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: ${{ matrix.crystal || 'latest' }}
       - name: Check out repository code
         uses: actions/checkout@v7
       - name: Install dependencies
