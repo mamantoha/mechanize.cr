@@ -8,11 +8,19 @@
 class ::HTTP::Cookie
   property origin : String?
 
-  def initialize(name : String, value : String, @path : String? = nil,
-                 @expires : Time? = nil, @domain : String? = nil,
-                 @secure : Bool = false, @http_only : Bool = false,
-                 @samesite : SameSite? = nil, @extension : String? = nil,
-                 @origin : String? = nil, @creation_time = Time.utc)
+  def initialize(
+    name : String,
+    value : String,
+    @path : String? = nil,
+    @expires : Time? = nil,
+    @domain : String? = nil,
+    @secure : Bool = false,
+    @http_only : Bool = false,
+    @samesite : SameSite? = nil,
+    @extension : String? = nil,
+    @origin : String? = nil,
+    @creation_time = Time.utc,
+  )
     validate_name(name)
     @name = name
     validate_value(value)

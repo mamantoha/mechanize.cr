@@ -32,12 +32,14 @@ class Mechanize
       # send http request and return page.
       # This method is called from Mechanize#get, #post and other methods.
       # There's no need to call this method directly.
-      def fetch(uri,
-                method = :get,
-                headers = ::HTTP::Headers.new,
-                params = Hash(String, String).new,
-                body : String? = nil,
-                referer = (current_page unless history.empty?))
+      def fetch(
+        uri,
+        method = :get,
+        headers = ::HTTP::Headers.new,
+        params = Hash(String, String).new,
+        body : String? = nil,
+        referer = (current_page unless history.empty?),
+      )
         uri = resolve_url(uri, referer)
         set_request_headers(uri, headers)
         set_user_agent
@@ -80,11 +82,13 @@ class Mechanize
       end
 
       # send http request
-      private def http_request(client : ::HTTP::Client,
-                               uri : URI,
-                               method : Symbol,
-                               params : Hash(String, String)?,
-                               body : String?) : ::HTTP::Client::Response?
+      private def http_request(
+        client : ::HTTP::Client,
+        uri : URI,
+        method : Symbol,
+        params : Hash(String, String)?,
+        body : String?,
+      ) : ::HTTP::Client::Response?
         request_log(uri, method)
         path = uri.path
         if query = uri.query
